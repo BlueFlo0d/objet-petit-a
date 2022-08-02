@@ -1,0 +1,5 @@
+#+TITLE: Toolbox for nonconvex/noncontinuous/noisy optimization
+
+This package currently serves as a repository for optimization
+algorithms I factor out from usage in my own research projects, but
+any contribution is welcomed.
