@@ -11,7 +11,11 @@
   (:method ((self problem)) (cost self (parameter self))))
 (defmethod-1 run () (controller)
   (iter (for i below eval-interval)
-    (run search-node))
+    (restart-case
+        (run search-node)
+      (continue-from-best ()
+        :test (lambda (c) best-nodes)
+        (setq search-node (copy (cdar best-nodes))))))
   (let ((eval-cost (eval-cost search-node)))
     (when (or (not best-nodes)
               (< eval-cost (caar (last best-nodes))))
@@ -33,14 +37,20 @@
 
 (defclass fix-restart (controller)
   ((n-restart :initarg :n-restart)
-   (parameter-0 :initarg :parameter))
-  (:default-initargs :n-restart 1000))
+   (parameter-0 :initarg :parameter)
+   (timeout :initarg :timeout)
+   (thread :initform nil))
+  (:default-initargs :n-restart 1000 :timeout nil))
+(defun debug-p (thread)
+  (let ((db-level (sb-thread:symbol-value-in-thread 'swank::*sldb-level* thread nil)))
+    (and db-level (> db-level 0))))
 (defmethod-1 run () (fix-restart)
   (reinitialize-instance search-node :parameter (copy parameter-0))
   (handler-case
-      (iter (for i below n-restart)
-        (call-next-method))
-    (state-not-promising () nil)))
+      (sb-ext:with-timeout timeout
+        (iter (for i below n-restart)
+          (call-next-method)))
+    (sb-ext:timeout () nil)))
 ;; Luby, Michael, Alistair Sinclair, and David Zuckerman. "Optimal speedup of Las Vegas algorithms." Information Processing Letters 47, no. 4 (1993): 173-180.
 (defun luby-sequence-next (sequence)
   (let* ((epoches+1 (+ 2 (length sequence)))

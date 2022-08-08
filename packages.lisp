@@ -1,17 +1,19 @@
 (defpackage #:objet-petit-a
   (:use #:cl #:dynamic-mixins #:metabang-bind #:iterate)
   (:import-from #:iterate #:iter)
-  (:local-nicknames (#:m #:magicl) (#:a #:alexandria) (#:s #:serapeum))
+  (:local-nicknames (#:m #:magicl) (#:a #:alexandria) (#:s #:serapeum)
+                    (#:p #:lparallel))
   (:export
    #+nil common
    #:defmethod-1 #:problem #:cost #:parameter #:run #:copy
    #+nil optimization
    #:gradient #:gradient-descent #:learning-rate
    #:hessian #:newton #:sfn #:damp-hessian #:damp-hessian-si #:delta
-   #:metro-hastings #:beta-m #:mutator
+   #:metro-hastings #:beta-m #:mutate
    #+nil stochastic-approximation
    #:1spsa #:step-size #:common-random-number #:2spsa #:beta-h
    #+nil control
-   #:controller #:eval-cost #:fix-restart #:luby-restart #:found-promising-state #:search-node
+   #:controller #:eval-cost #:fix-restart #:luby-restart #:search-node
+   #:found-promising-state #:state-not-promising #:continue-from-best
    #+nil dwim
    #:recipe))

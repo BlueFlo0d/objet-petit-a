@@ -1,5 +1,5 @@
 (asdf:defsystem objet-petit-a
-  :depends-on (:magicl/ext-lapack :dynamic-mixins :serapeum :metabang-bind)
+  :depends-on (:magicl/ext-lapack :dynamic-mixins :serapeum :metabang-bind :lparallel)
   :components ((:file "packages")
                (:file "common" :depends-on ("packages"))
                (:file "optimization" :depends-on ("common"))
