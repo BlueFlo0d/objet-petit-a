@@ -15,7 +15,7 @@
         (run search-node)
       (continue-from-best ()
         :test (lambda (c) best-nodes)
-        (setq search-node (copy (cdar best-nodes))))))
+        (reinitialize-instance search-node :parameter (copy (parameter (cdar best-nodes)))))))
   (let ((eval-cost (eval-cost search-node)))
     (when (or (not best-nodes)
               (< eval-cost (caar (last best-nodes))))
@@ -46,11 +46,16 @@
     (and db-level (> db-level 0))))
 (defmethod-1 run () (fix-restart)
   (reinitialize-instance search-node :parameter (copy parameter-0))
-  (handler-case
+  (let ((thread sb-thread:*current-thread*))
+    (handler-bind
+        ((sb-ext:timeout
+           (lambda (c)
+             (if (debug-p thread)
+                 (invoke-restart 'abort)
+                 (return-from run)))))
       (sb-ext:with-timeout timeout
         (iter (for i below n-restart)
-          (call-next-method)))
-    (sb-ext:timeout () nil)))
+          (call-next-method))))))
 ;; Luby, Michael, Alistair Sinclair, and David Zuckerman. "Optimal speedup of Las Vegas algorithms." Information Processing Letters 47, no. 4 (1993): 173-180.
 (defun luby-sequence-next (sequence)
   (let* ((epoches+1 (+ 2 (length sequence)))

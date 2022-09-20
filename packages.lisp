@@ -7,7 +7,7 @@
    #+nil common
    #:defmethod-1 #:problem #:cost #:parameter #:run #:copy
    #+nil optimization
-   #:gradient #:gradient-descent #:learning-rate
+   #:gradient #:gradient-descent #:golden-search #:learning-rate #:momentum
    #:hessian #:newton #:sfn #:damp-hessian #:damp-hessian-si #:delta
    #:metro-hastings #:beta-m #:mutate
    #+nil stochastic-approximation
